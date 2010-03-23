@@ -29,6 +29,26 @@ void		*phil_start(void *strct)
   pthread_exit(NULL);
 }
 
+int		check_ind(int ind)
+{
+  if (ind < 0)
+    ind = NB_PHIL - 1;
+  ind = ind % NB_PHIL;
+  return (ind);
+}
+
+int		transmit_chopstick(t_table *table, int from, int to)
+{
+  from = check_ind(from);
+  to = check_ind(to);
+  pthread_mutex_lock(table->mx_tab + from);
+  pthread_mutex_lock(table->mx_tab + to);
+  table->phil_tab[from].chopstick--;
+  table->phil_tab[to].chopstick++;
+  pthread_mutex_unlock(table->mx_tab + from);
+  pthread_mutex_unlock(table->mx_tab + to);
+}
+
 int		phil_creat(pthread_t *thd, t_table *table)
 {
   int		i;
