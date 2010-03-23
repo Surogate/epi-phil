@@ -34,10 +34,11 @@ void		*phil_start(void *strct)
 	  pthread_mutex_lock(&(table->mx_ress));
 	  phil->eaten++;
 	  table->ressource--;
+	  printf("ressource restante %i\n", table->ressource);
 	  pthread_mutex_unlock(&(table->mx_ress));
 	  sleep(EAT_TIME);
 	  pthread_mutex_unlock(table->mx_tab + phil->uid);
-	  printf("Le philosophe %i mange\n, j'ai deja manger %i fois\n", 
+	  printf("Le philosophe %i mange, j'ai deja manger %i fois\n", 
 		 phil->uid, phil->eaten);
 	  
 	}
