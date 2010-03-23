@@ -34,13 +34,13 @@ void		*phil_start(void *strct)
 	  pthread_mutex_lock(&(table->mx_ress));
 	  phil->eaten++;
 	  table->ressource--;
+	  table_display(table);
 	  printf("ressource restante %i\n", table->ressource);
 	  pthread_mutex_unlock(&(table->mx_ress));
 	  sleep(EAT_TIME);
 	  pthread_mutex_unlock(table->mx_tab + phil->uid);
 	  printf("Le philosophe %i mange, j'ai deja manger %i fois\n", 
 		 phil->uid, phil->eaten);
-	  
 	}
       if (phil->chopsticks)
 	transmit_chopstick(table, phil->uid, phil->uid + 1);
@@ -62,17 +62,8 @@ int		transmit_chopstick(t_table *table, int from, int to)
   to = check_ind(to);
   pthread_mutex_lock(table->mx_tab + from);
   pthread_mutex_lock(table->mx_tab + to);
-  if (table->phil_tab[from].chopsticks == 2
-      && table->phil_tab[from].chopsticks == 0)
-    {
-      table->phil_tab[from].chopsticks -= 2;
-      table->phil_tab[to].chopsticks += 2; 
-    }
-  else
-    {
-      table->phil_tab[from].chopsticks--;
-      table->phil_tab[to].chopsticks++;
-    }
+  table->phil_tab[from].chopsticks--;
+  table->phil_tab[to].chopsticks++;
   pthread_mutex_unlock(table->mx_tab + from);
   pthread_mutex_unlock(table->mx_tab + to);
   return (EXIT_SUCCESS);
