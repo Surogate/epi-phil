@@ -26,15 +26,15 @@ void		*phil_start(void *strct)
   phil = (t_phil *)strct;
   table = (t_table *)phil->table;
   phil_display(phil);
-  // si je peut manger -> je mange
   if (phil->chopstick == 2)
     {
       pthread_mutex_lock(table->mx_tab + phil->uid);
       eaten++;
-      usleep(SLEEP_TIME);
+      usleep(EAT_TIME);
       pthread_mutex_unlock(table->mx_tab + phil->uid);
     }
-  // je passe mes baguette a mon voisin
+  if (phil->baguette)
+    transmit_chopstick(table, phil->uid, phil->uid++);
   pthread_exit(NULL);
 }
 
@@ -52,8 +52,17 @@ int		transmit_chopstick(t_table *table, int from, int to)
   to = check_ind(to);
   pthread_mutex_lock(table->mx_tab + from);
   pthread_mutex_lock(table->mx_tab + to);
-  table->phil_tab[from].chopstick--;
-  table->phil_tab[to].chopstick++;
+  if (table->phil_tab[from].chopstick == 2
+      && table->phil_tab[from].chopstick == 0)
+    {
+      table->phil_tab[from].chopstick -= 2;
+      table->phil_tab[to].chopstick += 2; 
+    }
+  else
+    {
+      table->phil_tab[from].chopstick--;
+      table->phil_tab[to].chopstick++;
+    }
   pthread_mutex_unlock(table->mx_tab + from);
   pthread_mutex_unlock(table->mx_tab + to);
 }

@@ -14,4 +14,6 @@
 #define NB_PHIL		5
 #define NB_RESS		30
 
+#define EAT_TIME	1
+
 #endif
