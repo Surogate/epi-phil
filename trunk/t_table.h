@@ -13,8 +13,9 @@
 
 typedef struct
 {
-  t_phil	phil_tab[NB_PHIL];
-  int		ressource;
-}		t_table;
+  t_phil		phil_tab[NB_PHIL];
+  pthread_mutex_t	mx_tab[NB_PHIL];
+  int			ressource;
+}			t_table;
 
 #endif
