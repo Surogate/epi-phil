@@ -28,5 +28,6 @@ int		main()
   err = phil_creat(thd, &table);
   if (err == EXIT_FAILURE)
     perror("phil_creat fail");
+  pthread_mutex_trylock
   pthread_exit(NULL);
 }

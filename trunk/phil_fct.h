@@ -11,7 +11,9 @@
 #ifndef PHIL_START_C_INCLUDED
 # define PHIL_START_C_INCLUDED
 
-void	*phil_start(void *strct);
-int	phil_creat(pthread_t *thd, t_table *table);
+void		*phil_start(void *strct);
+int		phil_creat(pthread_t *thd, t_table *table);
+int		check_ind(int ind);
+int		transmit_chopstick(t_table *table, int from, int to);
 
 #endif
