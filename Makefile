@@ -11,7 +11,7 @@
 NAME	= philo1
 CC	= gcc
 RM	= rm -rf
-SRCS	= phil_start.c		\
+SRCS	= phil_fct.c		\
 	table_fct.c		\
 	main.c
 

@@ -16,7 +16,7 @@
 #include "t_phil.h"
 #include "t_table.h"
 #include "table_fct.h"
-#include "phil_start.h"
+#include "phil_fct.h"
 
 void		*phil_start(void *strct)
 {
