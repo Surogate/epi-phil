@@ -26,6 +26,15 @@ void		*phil_start(void *strct)
   phil = (t_phil *)strct;
   table = (t_table *)phil->table;
   phil_display(phil);
+  // si je peut manger -> je mange
+  if (phil->chopstick == 2)
+    {
+      pthread_mutex_lock(table->mx_tab + phil->uid);
+      eaten++;
+      usleep(SLEEP_TIME);
+      pthread_mutex_unlock(table->mx_tab + phil->uid);
+    }
+  // je passe mes baguette a mon voisin
   pthread_exit(NULL);
 }
 
