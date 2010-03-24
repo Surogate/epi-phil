@@ -49,16 +49,18 @@ int		check_ind(int ind)
 
 int		eat_rice(t_table *table, t_phil *phil)
 {
+  printf("Le philosophe %i commence a manger\n", 
+	 phil->uid);
   pthread_mutex_lock(table->mx_tab + phil->uid);
   pthread_mutex_lock(&(table->mx_ress));
   phil->eaten++;
   table->ressource--;
-  printf("Le philosophe %i mange, j'ai deja manger %i fois\n", 
-	 phil->uid, phil->eaten);
   printf("ressource restante %i\n", table->ressource);
   pthread_mutex_unlock(&(table->mx_ress));
-  sleep(EAT_TIME);
+  /*sleep(EAT_TIME);*/
   pthread_mutex_unlock(table->mx_tab + phil->uid);
+  printf("Le philosophe %i mange, j'ai deja manger %i fois\n", 
+	 phil->uid, phil->eaten);
   return (EXIT_SUCCESS);
 }
 
