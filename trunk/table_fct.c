@@ -25,7 +25,10 @@ int	table_init(t_table *table)
     {
       table->phil_tab[i].table = table;
       table->phil_tab[i].uid = i;
-      table->phil_tab[i].chopsticks = 1;
+      if (i &1)
+	table->phil_tab[i].chopsticks = 2;
+      else
+	table->phil_tab[i].chopsticks = 0;
       table->phil_tab[i].eaten = 0;
       i++;
     }
