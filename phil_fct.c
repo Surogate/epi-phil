@@ -25,23 +25,14 @@ void		*phil_start(void *strct)
 
   phil = (t_phil *)strct;
   table = (t_table *)phil->table;
-  phil_display(phil);
+  if (phil->uid & 1)
+    {
+      
+    }
   while (table->ressource)
     {
       if (phil->chopsticks == 2)
-	{
-	  pthread_mutex_lock(table->mx_tab + phil->uid);
-	  pthread_mutex_lock(&(table->mx_ress));
-	  phil->eaten++;
-	  table->ressource--;
-	  table_display(table);
-	  printf("ressource restante %i\n", table->ressource);
-	  pthread_mutex_unlock(&(table->mx_ress));
-	  sleep(EAT_TIME);
-	  pthread_mutex_unlock(table->mx_tab + phil->uid);
-	  printf("Le philosophe %i mange, j'ai deja manger %i fois\n", 
-		 phil->uid, phil->eaten);
-	}
+	eat_rice(table, phil);
       if (phil->chopsticks)
 	transmit_chopstick(table, phil->uid, phil->uid + 1);
     }
@@ -56,14 +47,38 @@ int		check_ind(int ind)
   return (ind);
 }
 
+int		eat_rice(t_table *table, t_phil *phil)
+{
+  pthread_mutex_lock(table->mx_tab + phil->uid);
+  pthread_mutex_lock(&(table->mx_ress));
+  phil->eaten++;
+  table->ressource--;
+  printf("Le philosophe %i mange, j'ai deja manger %i fois\n", 
+	 phil->uid, phil->eaten);
+  printf("ressource restante %i\n", table->ressource);
+  pthread_mutex_unlock(&(table->mx_ress));
+  sleep(EAT_TIME);
+  pthread_mutex_unlock(table->mx_tab + phil->uid);
+  return (EXIT_SUCCESS);
+}
+
 int		transmit_chopstick(t_table *table, int from, int to)
 {
   from = check_ind(from);
   to = check_ind(to);
   pthread_mutex_lock(table->mx_tab + from);
   pthread_mutex_lock(table->mx_tab + to);
-  table->phil_tab[from].chopsticks--;
-  table->phil_tab[to].chopsticks++;
+  if (table->phil_tab[from].chopsticks == 2
+      && table->phil_tab[to].chopsticks == 0)
+    {
+      table->phil_tab[from].chopsticks = 0;
+      table->phil_tab[to].chopsticks = 2;
+    }
+  else
+    {
+      table->phil_tab[from].chopsticks--;
+      table->phil_tab[to].chopsticks++;
+    }
   pthread_mutex_unlock(table->mx_tab + from);
   pthread_mutex_unlock(table->mx_tab + to);
   return (EXIT_SUCCESS);
