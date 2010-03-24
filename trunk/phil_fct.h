@@ -15,5 +15,6 @@ void		*phil_start(void *strct);
 int		phil_creat(pthread_t *thd, t_table *table);
 int		check_ind(int ind);
 int		transmit_chopstick(t_table *table, int from, int to);
+int		eat_rice(t_table *table, t_phil *phil);
 
 #endif
