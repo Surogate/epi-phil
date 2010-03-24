@@ -22,19 +22,17 @@ void		*phil_start(void *strct)
 {
   t_phil	*phil;
   t_table	*table;
+  int		i;
 
   phil = (t_phil *)strct;
   table = (t_table *)phil->table;
-  if (phil->uid & 1)
+  i = 10;
+  while (i)
     {
-      
-    }
-  while (table->ressource)
-    {
-      if (phil->chopsticks == 2)
-	eat_rice(table, phil);
-      if (phil->chopsticks)
+      if (phil->chopstick)
 	transmit_chopstick(table, phil->uid, phil->uid + 1);
+      phil_display(phil);
+      i--;
     }
   pthread_exit(NULL);
 }
