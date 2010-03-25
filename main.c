@@ -21,13 +21,18 @@
 int		main()
 {
   int		err;
+  int		i;
   pthread_t	thd[NB_PHIL];
   t_table	table;
 
+  i = 0;
   table_init(&table);
+  table_display(&table);
   err = phil_creat(thd, &table);
   if (err == EXIT_FAILURE)
     perror("phil_creat fail");
-  pthread_exit(NULL);
+  while(i < NB_PHIL && !pthread_join(thd[i], NULL))
+    i++;
   table_display(&table);
+  pthread_exit(NULL);
 }
