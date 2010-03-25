@@ -59,7 +59,7 @@ int	check_ress(t_table *table)
 {
   int	ress;
 
-    pthread_mutex_lock(&(table->mx_ress));
+  pthread_mutex_lock(&(table->mx_ress));
   ress = table->ressource;
   pthread_mutex_unlock(&(table->mx_ress));
   return (ress);

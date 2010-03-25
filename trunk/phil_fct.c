@@ -39,10 +39,12 @@ void		*phil_start(void *strct)
       if (phil->chopsticks >= 2)
 	eat_rice(table, phil);
       pthread_mutex_unlock(table->mx_tab + phil->uid);
+      pthread_mutex_lock(&(table->mx_trans));
       pthread_mutex_lock(table->mx_tab + phil->uid);
       if (phil->chopsticks)
 	transmit_chopstick(table, phil->uid, phil->uid + 1);
       pthread_mutex_unlock(table->mx_tab + phil->uid);
+      pthread_mutex_unlock(&(table->mx_trans));
       ress = check_ress(table);
     }
   pthread_exit(NULL);
@@ -94,6 +96,7 @@ int		phil_creat(pthread_t *thd, t_table *table)
 
   i = 0;
   pthread_mutex_init(&(table->mx_ress), NULL);
+  pthread_mutex_init(&(table->mx_trans), NULL);
   while (i < NB_PHIL)
     {
       pthread_mutex_init(table->mx_tab + i, NULL);

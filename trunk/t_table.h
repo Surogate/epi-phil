@@ -16,6 +16,7 @@ typedef struct
   t_phil		phil_tab[NB_PHIL];
   pthread_mutex_t	mx_tab[NB_PHIL];
   pthread_mutex_t	mx_ress;
+  pthread_mutex_t	mx_trans;
   int			ressource;
 }			t_table;
 
