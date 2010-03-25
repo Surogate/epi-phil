@@ -25,6 +25,24 @@ int	table_init(t_table *table)
     {
       table->phil_tab[i].table = table;
       table->phil_tab[i].uid = i;
+      table->phil_tab[i].chopsticks = 1;
+      table->phil_tab[i].eaten = 0;
+      i++;
+    }
+  table->ressource = NB_RESS;
+  return (EXIT_SUCCESS);
+}
+
+/*
+int	table_init(t_table *table)
+{
+  int	i;
+
+  i = 0;
+  while (i < NB_PHIL)
+    {
+      table->phil_tab[i].table = table;
+      table->phil_tab[i].uid = i;
       if (i &1)
 	table->phil_tab[i].chopsticks = 2;
       else
@@ -35,6 +53,7 @@ int	table_init(t_table *table)
   table->ressource = NB_RESS;
   return (EXIT_SUCCESS);
 }
+*/
 
 int	phil_display(t_phil *phil)
 {

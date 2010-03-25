@@ -12,8 +12,7 @@
 # define DEFINE_INCLUDED
 
 #define NB_PHIL		5
-#define NB_RESS		2048
-
+#define NB_RESS		64
 #define EAT_TIME	1
 
 #endif
