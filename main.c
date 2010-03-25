@@ -30,7 +30,10 @@ int		main()
   table_display(&table);
   err = phil_creat(thd, &table);
   if (err == EXIT_FAILURE)
-    perror("phil_creat fail");
+    {
+      perror("phil_creat fail");
+      exit(EXIT_FAILURE);
+    }
   while(i < NB_PHIL && !pthread_join(thd[i], NULL))
     i++;
   table_display(&table);

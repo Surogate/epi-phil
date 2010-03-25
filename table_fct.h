@@ -14,5 +14,6 @@
 int	table_init(t_table *table);
 int	phil_display(t_phil *phil);
 int	table_display(t_table *table);
+int	check_ress(t_table *table);
 
 #endif
