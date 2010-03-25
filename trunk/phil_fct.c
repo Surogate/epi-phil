@@ -22,26 +22,39 @@ void		*phil_start(void *strct)
 {
   t_phil	*phil;
   t_table	*table;
-  int		i;
+  int		ress;
 
   phil = (t_phil *)strct;
   table = (t_table *)phil->table;
   pthread_mutex_unlock(table->mx_tab + phil->uid);
-  i = table->ressource;
+
+  pthread_mutex_lock(&(table->mx_ress));
+  ress = table->ressource;
   pthread_mutex_unlock(&(table->mx_ress));
-  while (i)
+
+  pthread_mutex_lock(table->mx_tab + phil->uid);
+  if (phil->uid & 1)
+    transmit_chopstick(table, phil->uid, phil->uid + 1);
+  phil_display(phil);
+  pthread_mutex_unlock(table->mx_tab + phil->uid);
+
+  while (ress)
     {
+
       pthread_mutex_lock(table->mx_tab + phil->uid);
       if (phil->chopsticks == 2)
 	eat_rice(table, phil);
       pthread_mutex_unlock(table->mx_tab + phil->uid);
+
       pthread_mutex_lock(table->mx_tab + phil->uid);
       if (phil->chopsticks)
 	transmit_chopstick(table, phil->uid, phil->uid + 1);
       pthread_mutex_unlock(table->mx_tab + phil->uid);
+
+      pthread_mutex_lock(&(table->mx_ress));
+      ress = table->ressource;
       pthread_mutex_unlock(&(table->mx_ress));
-      i = table->ressource;
-      pthread_mutex_unlock(&(table->mx_ress));
+
     }
   pthread_exit(NULL);
 }
@@ -70,15 +83,10 @@ int		transmit_chopstick(t_table *table, int from, int to)
   pthread_mutex_lock(table->mx_tab + to);
   if (table->phil_tab[from].chopsticks == 2
       && table->phil_tab[to].chopsticks == 0)
-    {
-      table->phil_tab[from].chopsticks = 0;
-      table->phil_tab[to].chopsticks = 2;
-    }
+    table->phil_tab[to].chopsticks = 2;
   else
-    {
-      table->phil_tab[from].chopsticks--;
-      table->phil_tab[to].chopsticks++;
-    }
+    table->phil_tab[to].chopsticks += 1;
+  table->phil_tab[from].chopsticks = 0;
   pthread_mutex_unlock(table->mx_tab + to);
   return (EXIT_SUCCESS);
 }
