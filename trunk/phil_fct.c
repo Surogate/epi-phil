@@ -97,6 +97,8 @@ int		phil_creat(pthread_t *thd, t_table *table)
   i = 0;
   pthread_mutex_init(&(table->mx_ress), NULL);
   pthread_mutex_init(&(table->mx_trans), NULL);
+  pthread_mutex_unlock(&(table->mx_trans));
+  pthread_mutex_unlock(&(table->mx_ress));
   while (i < NB_PHIL)
     {
       pthread_mutex_init(table->mx_tab + i, NULL);
