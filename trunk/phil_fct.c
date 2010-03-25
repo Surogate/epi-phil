@@ -27,34 +27,23 @@ void		*phil_start(void *strct)
   phil = (t_phil *)strct;
   table = (t_table *)phil->table;
   pthread_mutex_unlock(table->mx_tab + phil->uid);
-
-  pthread_mutex_lock(&(table->mx_ress));
-  ress = table->ressource;
-  pthread_mutex_unlock(&(table->mx_ress));
-
+  ress = check_ress(table);
   pthread_mutex_lock(table->mx_tab + phil->uid);
   if (phil->uid & 1)
     transmit_chopstick(table, phil->uid, phil->uid + 1);
   phil_display(phil);
   pthread_mutex_unlock(table->mx_tab + phil->uid);
-
   while (ress)
     {
-
       pthread_mutex_lock(table->mx_tab + phil->uid);
-      if (phil->chopsticks == 2)
+      if (phil->chopsticks >= 2)
 	eat_rice(table, phil);
       pthread_mutex_unlock(table->mx_tab + phil->uid);
-
       pthread_mutex_lock(table->mx_tab + phil->uid);
       if (phil->chopsticks)
 	transmit_chopstick(table, phil->uid, phil->uid + 1);
       pthread_mutex_unlock(table->mx_tab + phil->uid);
-
-      pthread_mutex_lock(&(table->mx_ress));
-      ress = table->ressource;
-      pthread_mutex_unlock(&(table->mx_ress));
-
+      ress = check_ress(table);
     }
   pthread_exit(NULL);
 }
@@ -66,7 +55,6 @@ int		check_ind(int ind)
   if (ind < 0)
     ind = NB_PHIL - 1;
   i = ind % NB_PHIL;
-  printf("indice %i\n", ind);
   return (i);
 }
 
@@ -84,12 +72,17 @@ int		transmit_chopstick(t_table *table, int from, int to)
   from = check_ind(from);
   to = check_ind(to);
   pthread_mutex_lock(table->mx_tab + to);
-  if (table->phil_tab[from].chopsticks == 2
+  if (table->phil_tab[from].chopsticks >= 2
       && table->phil_tab[to].chopsticks == 0)
-    table->phil_tab[to].chopsticks += 2;
+    {
+      table->phil_tab[to].chopsticks = 2;
+      table->phil_tab[from].chopsticks -= 2;
+    }
   else
-    table->phil_tab[to].chopsticks += 1;
-  table->phil_tab[from].chopsticks = 0;
+    {
+      table->phil_tab[to].chopsticks += 1;
+      table->phil_tab[from].chopsticks -= 1;
+    }
   pthread_mutex_unlock(table->mx_tab + to);
   return (EXIT_SUCCESS);
 }
@@ -100,8 +93,10 @@ int		phil_creat(pthread_t *thd, t_table *table)
   int		err;
 
   i = 0;
+  pthread_mutex_init(&(table->mx_ress), NULL);
   while (i < NB_PHIL)
     {
+      pthread_mutex_init(table->mx_tab + i, NULL);
       err = pthread_create(thd + i, NULL, phil_start, table->phil_tab + i);
       if (err)
 	return (EXIT_FAILURE);

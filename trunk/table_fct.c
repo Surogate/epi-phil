@@ -55,6 +55,16 @@ int	table_init(t_table *table)
 }
 */
 
+int	check_ress(t_table *table)
+{
+  int	ress;
+
+    pthread_mutex_lock(&(table->mx_ress));
+  ress = table->ressource;
+  pthread_mutex_unlock(&(table->mx_ress));
+  return (ress);
+}
+
 int	phil_display(t_phil *phil)
 {
   printf("le philosophe %i possede %i baguette et a mange %i fois\n",
@@ -68,12 +78,14 @@ int	table_display(t_table *table)
   int	i;
 
   i = 0;
+  printf("=========================\n");
   while (i < NB_PHIL)
     {
       phil_display(table->phil_tab + i);
       i++;
     }
-  printf("il reste %i part a manger\n", table->ressource);
+  printf("il reste %i part a manger\n", table->ressource);  
+  printf("=========================\n");
   fflush(stdout);
   return (EXIT_SUCCESS);
 }
