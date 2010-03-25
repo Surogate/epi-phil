@@ -61,10 +61,13 @@ void		*phil_start(void *strct)
 
 int		check_ind(int ind)
 {
+  int		i;
+
   if (ind < 0)
     ind = NB_PHIL - 1;
-  ind = ind % NB_PHIL;
-  return (ind);
+  i = ind % NB_PHIL;
+  printf("indice %i\n", ind);
+  return (i);
 }
 
 int		eat_rice(t_table *table, t_phil *phil)
@@ -83,7 +86,7 @@ int		transmit_chopstick(t_table *table, int from, int to)
   pthread_mutex_lock(table->mx_tab + to);
   if (table->phil_tab[from].chopsticks == 2
       && table->phil_tab[to].chopsticks == 0)
-    table->phil_tab[to].chopsticks = 2;
+    table->phil_tab[to].chopsticks += 2;
   else
     table->phil_tab[to].chopsticks += 1;
   table->phil_tab[from].chopsticks = 0;
