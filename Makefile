@@ -13,6 +13,7 @@ CC	= gcc
 RM	= rm -rf
 SRCS	= phil_fct.c		\
 	table_fct.c		\
+	xpthread.c		\
 	main.c
 
 OBJS	= $(SRCS:.c=.o)

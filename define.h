@@ -11,8 +11,8 @@
 #ifndef DEFINE_INCLUDED
 # define DEFINE_INCLUDED
 
-#define NB_PHIL		5
-#define NB_RESS		64
+#define NB_PHIL		7
+#define NB_RESS		32
 #define EAT_TIME	1
 
 #endif

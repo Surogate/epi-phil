@@ -16,6 +16,7 @@
 #include "t_phil.h"
 #include "t_table.h"
 #include "table_fct.h"
+#include "xpthread.h"
 #include "phil_fct.h"
 
 void		*phil_start(void *strct)
@@ -27,17 +28,16 @@ void		*phil_start(void *strct)
   phil = (t_phil *)strct;
   table = (t_table *)phil->table;
   ress = check_ress(table);
-  phil_display(phil);
   while (ress)
     {
-      pthread_mutex_lock(table->mx_tab + phil->uid);
+      xpmutex_lock(table->mx_tab + phil->uid);
       if (phil->chopsticks >= 2)
 	eat_rice(table, phil);
-      pthread_mutex_unlock(table->mx_tab + phil->uid);
-      pthread_mutex_lock(table->mx_tab + phil->uid);
+      xpmutex_unlock(table->mx_tab + phil->uid);
+      xpmutex_lock(table->mx_tab + phil->uid);
       if (phil->chopsticks)
 	transmit_chopstick(table, phil->uid, phil->uid + 1);
-      pthread_mutex_unlock(table->mx_tab + phil->uid);
+      xpmutex_unlock(table->mx_tab + phil->uid);
       ress = check_ress(table);
     }
   pthread_exit(NULL);
@@ -55,13 +55,12 @@ int		check_ind(int ind)
 
 int		eat_rice(t_table *table, t_phil *phil)
 {
-  printf("phil-%i > je tente de manger\n", phil->uid);
-  pthread_mutex_lock(&(table->mx_ress));
+  xpmutex_lock(&(table->mx_ress));
+  printf("le phil %i mange\n", phil->uid);
   phil->eaten++;
   table->ressource--;
-  pthread_mutex_unlock(&(table->mx_ress));
-  sleep(1);
-  printf("phil-%i > j'ai manger\n", phil->uid);
+  xpmutex_unlock(&(table->mx_ress));
+  sleep(EAT_TIME);
   return (EXIT_SUCCESS);
 }
 
@@ -69,8 +68,7 @@ int		transmit_chopstick(t_table *table, int from, int to)
 {
   from = check_ind(from);
   to = check_ind(to);
-  printf("je tente de transmit\n");
-  pthread_mutex_lock(table->mx_tab + to);
+  xpmutex_lock(table->mx_tab + to);
   if (table->phil_tab[from].chopsticks == 2
       && table->phil_tab[to].chopsticks == 0)
     {
@@ -89,8 +87,7 @@ int		transmit_chopstick(t_table *table, int from, int to)
       table->phil_tab[to].chopsticks = 2;
       table->phil_tab[from].chopsticks = 0;
     }
-  pthread_mutex_unlock(table->mx_tab + to);
-  printf("j'ai transmit\n");
+  xpmutex_unlock(table->mx_tab + to);
   return (EXIT_SUCCESS);
 }
 
