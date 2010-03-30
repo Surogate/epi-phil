@@ -15,6 +15,7 @@
 #include "define.h"
 #include "t_phil.h"
 #include "t_table.h"
+#include "xpthread.h"
 
 int	table_init(t_table *table)
 {
@@ -40,9 +41,9 @@ int	check_ress(t_table *table)
 {
   int	ress;
 
-  pthread_mutex_lock(&(table->mx_ress));
+  xpmutex_lock(&(table->mx_ress));
   ress = table->ressource;
-  pthread_mutex_unlock(&(table->mx_ress));
+  xpmutex_unlock(&(table->mx_ress));
   return (ress);
 }
 
