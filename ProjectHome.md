@@ -1,0 +1,1 @@
+homework on the Dinning philosophe problem
